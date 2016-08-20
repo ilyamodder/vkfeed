@@ -44,6 +44,6 @@ public class VKRemoteRepository implements RemoteRepository {
                 //TODO wrap the VKError
                 observer.onError(new IOException());
             }
-        })
+        });
     }
 }
