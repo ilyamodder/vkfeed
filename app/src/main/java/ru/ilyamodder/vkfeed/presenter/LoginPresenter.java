@@ -12,7 +12,9 @@ import com.vk.sdk.api.VKError;
 
 import me.tatarka.rxloader.RxLoaderManager;
 import ru.ilyamodder.vkfeed.R;
+import ru.ilyamodder.vkfeed.api.RepositoryProvider;
 import ru.ilyamodder.vkfeed.view.LoginView;
+import rx.Observer;
 
 /**
  * Created by ilya on 19.08.16.
@@ -29,20 +31,25 @@ public class LoginPresenter {
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        return VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+        return RepositoryProvider.getRemoteRepository().processActivityResult(requestCode, resultCode, data, new Observer<String>() {
             @Override
-            public void onResult(VKAccessToken res) {
+            public void onCompleted() {
                 mView.showMainActivity();
             }
 
             @Override
-            public void onError(VKError error) {
-                Log.e("vk login", "error: " + error.toString());
+            public void onError(Throwable e) {
+                Log.e("vk login", "error: " + e.toString());
+            }
+
+            @Override
+            public void onNext(String s) {
+
             }
         });
     }
 
     public void onLoginButtonClicked() {
-        VKSdk.login(mActivity, mActivity.getResources().getStringArray(R.array.vk_app_scope));
+        RepositoryProvider.getRemoteRepository().login(mActivity, mActivity.getResources().getStringArray(R.array.vk_app_scope));
     }
 }
