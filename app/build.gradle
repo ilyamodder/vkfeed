@@ -13,8 +13,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "API_URL", "https://api.vk.com/method/"
-        buildConfigField "String", "API_VERSION", "5.53"
+        buildConfigField "String", "API_URL", '"https://api.vk.com/method/"'
+        buildConfigField "String", "API_VERSION", '"5.53"'
     }
     buildTypes {
         release {
