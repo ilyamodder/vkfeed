@@ -7,10 +7,7 @@ import android.content.Intent;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.model.VKApiPost;
 
 import java.io.IOException;
 
@@ -28,20 +25,21 @@ import rx.Observer;
 
 public class VKRemoteRepository implements RemoteRepository {
     private Context mContext;
-    private Retrofit mRetrofit;
+    private VKService mService;
 
     public VKRemoteRepository(Context mContext) {
         this.mContext = mContext;
-        mRetrofit = createRetrofit();
+        mService = createRetrofitService();
     }
 
-    private Retrofit createRetrofit() {
+    private VKService createRetrofitService() {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(createClient())
-                .build();
+                .build()
+                .create(VKService.class);
     }
 
     private OkHttpClient createClient() {
@@ -74,7 +72,7 @@ public class VKRemoteRepository implements RemoteRepository {
         });
     }
 
-    public void getNewsfeed() {
-
+    public VKService getService() {
+        return mService;
     }
 }
