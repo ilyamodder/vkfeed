@@ -47,6 +47,7 @@ public class VKRemoteRepository implements RemoteRepository {
     private OkHttpClient createClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new ApiVersionInterceptor())
+                .addInterceptor(new VkTokenAdderInterceptor())
                 .authenticator(new VkAuthenticator())
                 .build();
     }
