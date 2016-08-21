@@ -37,6 +37,6 @@ public class VKFeedApp extends Application {
         }
 
         RepositoryProvider.setLocalRepository(new SqlBriteDaoRepository());
-        RepositoryProvider.setRemoteRepository(new VKRemoteRepository());
+        RepositoryProvider.setRemoteRepository(new VKRemoteRepository(this));
     }
 }
