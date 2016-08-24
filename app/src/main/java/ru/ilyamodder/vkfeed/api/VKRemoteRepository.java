@@ -16,7 +16,10 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.ilyamodder.vkfeed.BuildConfig;
+import ru.ilyamodder.vkfeed.model.Newsfeed;
+import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.repository.RemoteRepository;
+import rx.Observable;
 import rx.Observer;
 
 /**
@@ -72,7 +75,8 @@ public class VKRemoteRepository implements RemoteRepository {
         });
     }
 
-    public VKService getService() {
-        return mService;
+    @Override
+    public Observable<VKResponse<Newsfeed>> getNewsfeed(String startFrom, int count) {
+        return mService.getNewsfeed(startFrom, count);
     }
 }
