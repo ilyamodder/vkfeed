@@ -24,8 +24,21 @@ public class JoinedPost {
     @Column("text")
     String mText;
     List<String> mPhotos;
+    @Column("likes_count")
+    int mLikesCount;
 
     public JoinedPost() {
+    }
+
+    public JoinedPost(long id, String name, Date date, String avatar, String text,
+                      List<String> photos, int likesCount) {
+        mId = id;
+        mName = name;
+        mDate = date;
+        mAvatar = avatar;
+        mText = text;
+        mPhotos = photos;
+        mLikesCount = likesCount;
     }
 
     public long getId() {

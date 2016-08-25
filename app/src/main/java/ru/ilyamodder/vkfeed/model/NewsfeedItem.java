@@ -48,7 +48,7 @@ public class NewsfeedItem {
         return mText;
     }
 
-    private int getLikesCount() {
+    public int getLikesCount() {
         return mLikes == null ? 0 : mLikes.getCount();
     }
 

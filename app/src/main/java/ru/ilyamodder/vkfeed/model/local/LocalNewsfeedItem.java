@@ -16,6 +16,7 @@ public class LocalNewsfeedItem {
     public static final String COL_IS_PROFILE_SRC = "is_profile_src";
     public static final String COL_DATE = "date";
     public static final String COL_TEXT = "text";
+    public static final String COL_LIKES_COUNT = "likes_count";
 
     @Column(COL_ID)
     long mId;
@@ -27,16 +28,20 @@ public class LocalNewsfeedItem {
     Date mDate;
     @Column(COL_TEXT)
     String mText;
+    @Column(COL_LIKES_COUNT)
+    int mLikesCount;
 
     public LocalNewsfeedItem() {
     }
 
-    public LocalNewsfeedItem(long id, long sourceId, boolean isProfileSource, Date date, String text) {
+    public LocalNewsfeedItem(long id, long sourceId, boolean isProfileSource, Date date,
+                             String text, int likesCount) {
         mId = id;
         mSourceId = sourceId;
         mIsProfileSource = isProfileSource;
         mDate = date;
         mText = text;
+        mLikesCount = likesCount;
     }
 
     public long getId() {
@@ -53,6 +58,10 @@ public class LocalNewsfeedItem {
 
     public Date getDate() {
         return mDate;
+    }
+
+    public int getLikesCount() {
+        return mLikesCount;
     }
 
     public String getText() {
