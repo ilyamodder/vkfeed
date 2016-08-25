@@ -27,7 +27,8 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                 LocalNewsfeedItem.COL_DATE + " LONG",
                 LocalNewsfeedItem.COL_IS_PROFILE_SRC + " BOOLEAN",
                 LocalNewsfeedItem.COL_SOURCE_ID + " LONG",
-                LocalNewsfeedItem.COL_TEXT + " TEXT").execute(database);
+                LocalNewsfeedItem.COL_TEXT + " TEXT",
+                LocalNewsfeedItem.COL_LIKES_COUNT + " INTEGER").execute(database);
         CREATE_TABLE(LocalGroup.TABLE_NAME,
                 LocalGroup.COL_ID + " LONG PRIMARY KEY NOT NULL",
                 LocalGroup.COL_NAME + " VARCHAR",
@@ -54,8 +55,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
         return query(SELECT(LocalNewsfeedItem.COL_ID, LocalNewsfeedItem.COL_DATE,
                 LocalNewsfeedItem.COL_TEXT, "coalesce(p." + LocalProfile.COL_FIRST_NAME + " || p."
                         + LocalProfile.COL_LAST_NAME + ", g." + LocalGroup.COL_NAME + ") AS name",
-                "COALESCE(" + LocalGroup.COL_PHOTO_URL + ", " + LocalProfile.COL_PHOTO_URL + " AS avatar",
-                "GROUP_CONCAT(ph." + LocalPhoto.COL_PHOTO_604 + ")")
+                "COALESCE(" + LocalGroup.COL_PHOTO_URL + ", " + LocalProfile.COL_PHOTO_URL + " AS avatar")
                 .FROM(LocalNewsfeedItem.TABLE_NAME)
                 .LEFT_OUTER_JOIN(LocalProfile.TABLE_NAME)
                 .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_IS_PROFILE_SRC + " AND " +
