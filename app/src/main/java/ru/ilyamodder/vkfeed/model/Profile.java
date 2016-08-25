@@ -16,6 +16,9 @@ public class Profile {
     @SerializedName("photo")
     private String mPhotoUrl;
 
+    public Profile() {
+    }
+
     public Profile(long userId, String firstName, String lastName, String photoUrl) {
         mUserId = userId;
         mFirstName = firstName;

@@ -10,6 +10,9 @@ public class VKResponse<R> {
     @SerializedName("response")
     private R mResponse;
 
+    public VKResponse() {
+    }
+
     public VKResponse(R mResponse) {
         this.mResponse = mResponse;
     }

@@ -19,6 +19,9 @@ public class Newsfeed {
     @SerializedName("next_from")
     private String mNextFrom;
 
+    public Newsfeed() {
+    }
+
     public Newsfeed(List<NewsfeedItem> items, List<Profile> profiles, List<Group> groups,
                     String nextFrom) {
         mItems = items;

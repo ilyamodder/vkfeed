@@ -14,6 +14,9 @@ public class Group {
     @SerializedName("photo")
     private String mPhotoUrl;
 
+    public Group() {
+    }
+
     public Group(long groupId, String name, String photoUrl) {
         mGroupId = groupId;
         mName = name;

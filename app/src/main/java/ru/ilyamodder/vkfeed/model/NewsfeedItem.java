@@ -2,11 +2,15 @@ package ru.ilyamodder.vkfeed.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by ilya on 21.08.16.
  */
 
 public class NewsfeedItem {
+    @SerializedName("attachments")
+    List<Attachment> mAttachments;
     @SerializedName("post_id")
     private long mPostId;
     @SerializedName("source_id")
@@ -15,12 +19,17 @@ public class NewsfeedItem {
     private long mDate;
     @SerializedName("text")
     private String mText;
+    @SerializedName("likes")
+    private Likes mLikes;
 
-    public NewsfeedItem(long postId, long sourceId, long date, String text) {
+    public NewsfeedItem(long postId, long sourceId, long date, String text, int likesCount,
+                        List<Attachment> attachments) {
         mPostId = postId;
         mSourceId = sourceId;
         mDate = date;
         mText = text;
+        mLikes = new Likes(likesCount);
+        mAttachments = attachments;
     }
 
     public long getPostId() {
@@ -37,5 +46,28 @@ public class NewsfeedItem {
 
     public String getText() {
         return mText;
+    }
+
+    private int getLikesCount() {
+        return mLikes == null ? 0 : mLikes.getCount();
+    }
+
+    public List<Attachment> getAttachments() {
+        return mAttachments;
+    }
+
+    private static class Likes {
+        int mCount;
+
+        public Likes() {
+        }
+
+        Likes(int count) {
+            mCount = count;
+        }
+
+        int getCount() {
+            return mCount;
+        }
     }
 }
