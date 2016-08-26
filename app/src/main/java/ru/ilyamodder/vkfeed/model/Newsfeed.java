@@ -11,7 +11,7 @@ import java.util.List;
 public class Newsfeed {
     @SerializedName("items")
     private List<NewsfeedItem> mItems;
-    @SerializedName("profile")
+    @SerializedName("profiles")
     private List<Profile> mProfiles;
     @SerializedName("groups")
     private List<Group> mGroups;

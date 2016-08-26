@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Profile {
-    @SerializedName("uid")
+    @SerializedName("id")
     private long mUserId;
     @SerializedName("first_name")
     private String mFirstName;
     @SerializedName("last_name")
     private String mLastName;
-    @SerializedName("photo")
+    @SerializedName("photo_100")
     private String mPhotoUrl;
 
     public Profile() {

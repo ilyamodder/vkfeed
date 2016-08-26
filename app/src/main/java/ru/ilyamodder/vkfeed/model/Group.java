@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Group {
-    @SerializedName("gid")
+    @SerializedName("id")
     private long mGroupId;
     @SerializedName("name")
     private String mName;
-    @SerializedName("photo")
+    @SerializedName("photo_100")
     private String mPhotoUrl;
 
     public Group() {
