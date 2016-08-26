@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface VKService {
-    @GET("/newsfeed.get?filters=post")
+    @GET("newsfeed.get?filters=post")
     Observable<VKResponse<Newsfeed>> getNewsfeed(@Query("start_from") String startFrom,
                                                  @Query("count") int count);
 }
