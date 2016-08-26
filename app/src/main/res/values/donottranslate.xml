@@ -2,6 +2,7 @@
 <resources>
     <integer name="com_vk_sdk_AppId">5597052</integer>
     <string-array name="vk_app_scope">
-        <item>newsfeed</item>
+        <item>wall</item>
+        <item>friends</item>
     </string-array>
 </resources>
