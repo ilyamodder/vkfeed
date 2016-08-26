@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.vk.sdk.VKSdk;
+
 import java.util.List;
 
 import me.tatarka.rxloader.RxLoaderManager;
@@ -37,6 +39,11 @@ public class MainPresenter {
     }
 
     public void onActivityCreate(Bundle savedInstanceState) {
+        if (!VKSdk.isLoggedIn()) {
+            mView.showLoginActivity();
+            return;
+        }
+
         if (savedInstanceState != null) {
             mCurrentPageNumber = savedInstanceState.getInt(PAGE_NUMBER);
         }

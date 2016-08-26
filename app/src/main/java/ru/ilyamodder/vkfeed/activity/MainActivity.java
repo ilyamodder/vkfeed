@@ -106,4 +106,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void showError() {
         Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void showLoginActivity() {
+        LoginActivity.startAsRootActivity(this);
+    }
 }

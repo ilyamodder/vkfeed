@@ -18,4 +18,6 @@ public interface MainView {
     void hideLoading();
 
     void showError();
+
+    void showLoginActivity();
 }
