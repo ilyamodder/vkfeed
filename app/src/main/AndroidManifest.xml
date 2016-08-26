@@ -27,6 +27,10 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
 
+        <meta-data
+            android:name="ru.ilyamodder.vkfeed.GlideModule"
+            android:value="GlideModule"/>
+
     </application>
 
 </manifest>
