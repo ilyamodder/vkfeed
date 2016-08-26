@@ -6,12 +6,10 @@ import android.util.Log;
 
 import com.vk.sdk.VKSdk;
 
-import java.util.List;
-
 import me.tatarka.rxloader.RxLoaderManager;
 import me.tatarka.rxloader.RxLoaderObserver;
 import ru.ilyamodder.vkfeed.api.RepositoryProvider;
-import ru.ilyamodder.vkfeed.model.local.JoinedPost;
+import ru.ilyamodder.vkfeed.model.local.JoinedPostsResponse;
 import ru.ilyamodder.vkfeed.rx.Converters;
 import ru.ilyamodder.vkfeed.view.MainView;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,6 +21,8 @@ import rx.schedulers.Schedulers;
 
 public class MainPresenter {
     public static final int ROWS_PER_PAGE = 20;
+    public static final String LOADER_INITIAL = "initial";
+    public static final String LOADER_MORE = "more";
     private static final String PAGE_NUMBER =
             "ru.ilyamodder.vkfeed.presenter.MainPresenter.PAGE_NUMBER";
     private Activity mActivity;
@@ -48,22 +48,24 @@ public class MainPresenter {
             mCurrentPageNumber = savedInstanceState.getInt(PAGE_NUMBER);
         }
 
-        mRxLoaderManager.create(Converters.toJoinedPost(RepositoryProvider.getRemoteRepository()
+        mRxLoaderManager.create(LOADER_INITIAL,
+                Converters.toJoinedPost(RepositoryProvider.getRemoteRepository()
                         .getNewsfeed("", ROWS_PER_PAGE))
                         .doOnEach(list -> {
 
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                , new RxLoaderObserver<List<JoinedPost>>() {
+                , new RxLoaderObserver<JoinedPostsResponse>() {
                     @Override
                     public void onStarted() {
                         mView.showLoading();
                     }
 
                     @Override
-                    public void onNext(List<JoinedPost> value) {
-                        mView.showFeed(value);
+                    public void onNext(JoinedPostsResponse value) {
+                        mNextOffset = value.getNextFrom();
+                        mView.showFeed(value.getPosts());
                         mView.hideLoading();
                     }
 
@@ -83,7 +85,35 @@ public class MainPresenter {
     }
 
     public void loadMore() {
-        Log.d("debug", "loading more");
+        mRxLoaderManager.create(LOADER_MORE + mNextOffset,
+                Converters.toJoinedPost(RepositoryProvider.getRemoteRepository()
+                        .getNewsfeed(mNextOffset, ROWS_PER_PAGE))
+                        .doOnEach(list -> {
+
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                , new RxLoaderObserver<JoinedPostsResponse>() {
+                    @Override
+                    public void onStarted() {
+                        mView.showLoading();
+                    }
+
+                    @Override
+                    public void onNext(JoinedPostsResponse value) {
+                        mNextOffset = value.getNextFrom();
+                        mView.addRowsToFeed(value.getPosts());
+                        mView.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.showError();
+                        mView.hideLoading();
+                    }
+                }
+        ).start();
     }
 
     public void onItemClick(long id) {

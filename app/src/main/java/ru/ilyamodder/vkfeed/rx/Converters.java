@@ -11,6 +11,7 @@ import ru.ilyamodder.vkfeed.model.NewsfeedItem;
 import ru.ilyamodder.vkfeed.model.Profile;
 import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
+import ru.ilyamodder.vkfeed.model.local.JoinedPostsResponse;
 import rx.Observable;
 
 /**
@@ -18,10 +19,10 @@ import rx.Observable;
  */
 
 public class Converters {
-    public static Observable<List<JoinedPost>> toJoinedPost(Observable<VKResponse<Newsfeed>> source) {
+    public static Observable<JoinedPostsResponse> toJoinedPost(Observable<VKResponse<Newsfeed>> source) {
         Observable<Newsfeed> serverData = source.map(VKResponse::getResponse);
         return Observable.zip(serverData.map(Newsfeed::getItems), serverData.map(Newsfeed::getProfiles),
-                serverData.map(Newsfeed::getGroups), (items, profiles, groups) -> {
+                serverData.map(Newsfeed::getGroups), serverData, (items, profiles, groups, response) -> {
                     List<JoinedPost> posts = new ArrayList<>();
                     for (NewsfeedItem item : items) {
                         String name = "";
@@ -48,7 +49,7 @@ public class Converters {
                                 photoUrl, item.getText(), toPhotoUrls(item.getAttachments()),
                                 item.getLikesCount()));
                     }
-                    return posts;
+                    return new JoinedPostsResponse(posts, response.getNextFrom());
                 });
     }
 

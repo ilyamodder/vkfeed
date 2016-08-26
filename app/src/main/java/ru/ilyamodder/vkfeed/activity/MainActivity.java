@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private MainPresenter mPresenter;
     private MainAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private boolean mNeedToLoadMore = false;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -63,8 +64,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
                 if ((visibleItemCount + pastVisiblesItems + MainPresenter.ROWS_PER_PAGE / 2)
                         >= totalItemCount && !mSwipeRefreshLayout.isRefreshing()
-                        && mAdapter.getItemCount() > 0) {
+                        && mNeedToLoadMore) {
                     mPresenter.loadMore();
+                    mNeedToLoadMore = false;
                 }
             }
         });
@@ -85,11 +87,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void showFeed(List<JoinedPost> posts) {
         mAdapter.setPosts(posts);
+        mNeedToLoadMore = true;
     }
 
     @Override
     public void addRowsToFeed(List<JoinedPost> posts) {
-        mAdapter.setPosts(posts);
+        mAdapter.addPosts(posts);
+        mNeedToLoadMore = true;
     }
 
     @Override
