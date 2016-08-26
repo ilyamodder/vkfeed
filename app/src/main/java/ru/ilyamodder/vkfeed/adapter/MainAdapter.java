@@ -50,7 +50,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         Glide.with(mContext)
                 .load(post.getAvatar())
                 .into(holder.mAvatar);
-        holder.mDate.setText(DateUtils.getRelativeTimeSpanString(mContext, post.getDate().getTime()));
+        holder.mDate.setText(DateUtils.getRelativeTimeSpanString(mContext,
+                post.getDate().getTime() * 1000));
     }
 
     @Override
