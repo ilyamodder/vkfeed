@@ -54,6 +54,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 .into(holder.mAvatar);
         holder.mDate.setText(DateUtils.getRelativeTimeSpanString(mContext,
                 post.getDate().getTime() * 1000));
+
+        holder.itemView.setOnClickListener(view -> mClickListener.call(post.getId()));
     }
 
     @Override
