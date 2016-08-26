@@ -16,6 +16,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 import rx.functions.Action1;
@@ -49,6 +50,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.mText.setText(post.getText());
         Glide.with(mContext)
                 .load(post.getAvatar())
+                .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.mAvatar);
         holder.mDate.setText(DateUtils.getRelativeTimeSpanString(mContext,
                 post.getDate().getTime() * 1000));
