@@ -45,7 +45,8 @@ public class Converters {
                             }
                         }
 
-                        posts.add(new JoinedPost(item.getPostId(), name, new Date(item.getDate()),
+                        posts.add(new JoinedPost(item.getPostId(), name,
+                                new Date(item.getDate() * 1000),
                                 photoUrl, item.getText(), toPhotoUrls(item.getAttachments()),
                                 item.getLikesCount()));
                     }
