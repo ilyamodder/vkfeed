@@ -68,12 +68,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addPosts(List<JoinedPost> posts) {
-        int oldSize = getItemCount();
-        mPosts.addAll(posts);
-        notifyItemRangeInserted(oldSize, posts.size());
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.avatar)
         ImageView mAvatar;
