@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
             }
         });
 
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh());
+
         mPresenter = new MainPresenter(this, this);
         mPresenter.onActivityCreate(savedInstanceState);
         if (!VKSdk.isLoggedIn()) {

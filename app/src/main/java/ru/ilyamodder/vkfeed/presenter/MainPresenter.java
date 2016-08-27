@@ -70,6 +70,9 @@ public class MainPresenter {
 
                     @Override
                     public void onNext(JoinedPostsResponse value) {
+                        if (mNextOffset.isEmpty()) {
+                            mPosts.clear();
+                        }
                         if (!mNextOffset.equals(value.getNextFrom())) {
                             mPosts.addAll(value.getPosts());
                         }
@@ -117,4 +120,8 @@ public class MainPresenter {
     }
 
 
+    public void refresh() {
+        mNextOffset = "";
+        loadMore();
+    }
 }
