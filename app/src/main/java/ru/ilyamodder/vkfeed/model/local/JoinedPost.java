@@ -1,5 +1,8 @@
 package ru.ilyamodder.vkfeed.model.local;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.hannesdorfmann.sqlbrite.objectmapper.annotation.Column;
 import com.hannesdorfmann.sqlbrite.objectmapper.annotation.ObjectMappable;
 
@@ -12,7 +15,18 @@ import java.util.List;
  * Created by ilya on 25.08.16.
  */
 @ObjectMappable
-public class JoinedPost {
+public class JoinedPost implements Parcelable {
+    public static final Creator<JoinedPost> CREATOR = new Creator<JoinedPost>() {
+        @Override
+        public JoinedPost createFromParcel(Parcel in) {
+            return new JoinedPost(in);
+        }
+
+        @Override
+        public JoinedPost[] newArray(int size) {
+            return new JoinedPost[size];
+        }
+    };
     @Column("_id")
     long mId;
     @Column("name")
@@ -39,6 +53,30 @@ public class JoinedPost {
         mText = text;
         mPhotos = photos;
         mLikesCount = likesCount;
+    }
+
+    protected JoinedPost(Parcel in) {
+        mId = in.readLong();
+        mName = in.readString();
+        mAvatar = in.readString();
+        mText = in.readString();
+        mPhotos = in.createStringArrayList();
+        mLikesCount = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
+        dest.writeString(mName);
+        dest.writeString(mAvatar);
+        dest.writeString(mText);
+        dest.writeStringList(mPhotos);
+        dest.writeInt(mLikesCount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public long getId() {
