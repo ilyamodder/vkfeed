@@ -11,8 +11,6 @@ import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 public interface MainView {
     void showFeed(List<JoinedPost> posts);
 
-    void addRowsToFeed(List<JoinedPost> posts);
-
     void showLoading();
 
     void hideLoading();

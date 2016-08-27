@@ -93,12 +93,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void addRowsToFeed(List<JoinedPost> posts) {
-        mAdapter.addPosts(posts);
-        mNeedToLoadMore = true;
-    }
-
-    @Override
     public void showLoading() {
         mSwipeRefreshLayout.setRefreshing(true);
     }
