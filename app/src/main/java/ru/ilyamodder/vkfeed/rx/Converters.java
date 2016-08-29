@@ -19,8 +19,8 @@ import rx.Observable;
  */
 
 public class Converters {
-    public static Observable<JoinedPostsResponse> toJoinedPost(Observable<VKResponse<Newsfeed>> source) {
-        Observable<Newsfeed> serverData = source.map(VKResponse::getResponse);
+    public static Observable<JoinedPostsResponse> toJoinedPost(VKResponse<Newsfeed> source) {
+        Observable<Newsfeed> serverData = Observable.just(source.getResponse());
         return Observable.zip(serverData.map(Newsfeed::getItems), serverData.map(Newsfeed::getProfiles),
                 serverData.map(Newsfeed::getGroups), serverData, (items, profiles, groups, response) -> {
                     List<JoinedPost> posts = new ArrayList<>();
@@ -45,7 +45,7 @@ public class Converters {
                             }
                         }
 
-                        posts.add(new JoinedPost(item.getPostId(), name,
+                        posts.add(new JoinedPost(item.getPostId(), item.getSourceId(), name,
                                 new Date(item.getDate() * 1000),
                                 photoUrl, item.getText(), toPhotoUrls(item.getAttachments()),
                                 item.getLikesCount()));

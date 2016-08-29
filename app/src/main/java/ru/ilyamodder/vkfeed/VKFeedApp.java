@@ -3,6 +3,7 @@ package ru.ilyamodder.vkfeed;
 import android.app.Application;
 import android.util.Log;
 
+import com.hannesdorfmann.sqlbrite.dao.DaoManager;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
@@ -36,7 +37,17 @@ public class VKFeedApp extends Application {
             Log.d("fingerprint", VKUtil.getCertificateFingerprint(this, this.getPackageName())[0]);
         }
 
-        RepositoryProvider.setLocalRepository(new SqlBriteDaoRepository());
+        SqlBriteDaoRepository daoRepository = new SqlBriteDaoRepository();
+
+        RepositoryProvider.setLocalRepository(daoRepository);
         RepositoryProvider.setRemoteRepository(new VKRemoteRepository(this));
+
+        DaoManager daoManager = DaoManager.with(this)
+                .databaseName("cache.db")
+                .version(1)
+                .add(daoRepository)
+                .logging(BuildConfig.DEBUG)
+                .build();
+
     }
 }

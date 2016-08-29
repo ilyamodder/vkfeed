@@ -2,6 +2,8 @@ package ru.ilyamodder.vkfeed.repository;
 
 import java.util.List;
 
+import ru.ilyamodder.vkfeed.model.Newsfeed;
+import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 import rx.Observable;
 
@@ -11,4 +13,8 @@ import rx.Observable;
 
 public interface LocalRepository {
     Observable<List<JoinedPost>> getNewsfeed(int offset, int count);
+
+    Observable<JoinedPost> getPost(long id, long sourceId);
+
+    void insertPosts(VKResponse<Newsfeed> newsfeed);
 }

@@ -3,15 +3,25 @@ package ru.ilyamodder.vkfeed.database;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hannesdorfmann.sqlbrite.dao.Dao;
+import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.Date;
 import java.util.List;
 
+import ru.ilyamodder.vkfeed.model.Attachment;
+import ru.ilyamodder.vkfeed.model.Newsfeed;
+import ru.ilyamodder.vkfeed.model.NewsfeedItem;
+import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 import ru.ilyamodder.vkfeed.model.local.JoinedPostMapper;
 import ru.ilyamodder.vkfeed.model.local.LocalGroup;
+import ru.ilyamodder.vkfeed.model.local.LocalGroupMapper;
 import ru.ilyamodder.vkfeed.model.local.LocalNewsfeedItem;
+import ru.ilyamodder.vkfeed.model.local.LocalNewsfeedItemMapper;
 import ru.ilyamodder.vkfeed.model.local.LocalPhoto;
+import ru.ilyamodder.vkfeed.model.local.LocalPhotoMapper;
 import ru.ilyamodder.vkfeed.model.local.LocalProfile;
+import ru.ilyamodder.vkfeed.model.local.LocalProfileMapper;
 import ru.ilyamodder.vkfeed.repository.LocalRepository;
 import rx.Observable;
 
@@ -25,28 +35,30 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
         CREATE_TABLE(LocalNewsfeedItem.TABLE_NAME,
                 LocalNewsfeedItem.COL_ID + " LONG NOT NULL",
                 LocalNewsfeedItem.COL_SOURCE_ID + " LONG NOT NULL",
-                LocalNewsfeedItem.COL_DATE + " LONG",
-                LocalNewsfeedItem.COL_TEXT + " TEXT",
-                LocalNewsfeedItem.COL_LIKES_COUNT + " INTEGER",
+                LocalNewsfeedItem.COL_DATE + " LONG NOT NULL",
+                LocalNewsfeedItem.COL_TEXT + " TEXT NOT NULL",
+                LocalNewsfeedItem.COL_LIKES_COUNT + " INTEGER NOT NULL",
                 "PRIMARY KEY (" + LocalNewsfeedItem.COL_ID + ", "
                         + LocalNewsfeedItem.COL_SOURCE_ID + ")")
                 .execute(database);
         CREATE_TABLE(LocalGroup.TABLE_NAME,
                 LocalGroup.COL_ID + " LONG PRIMARY KEY NOT NULL",
-                LocalGroup.COL_NAME + " VARCHAR",
-                LocalGroup.COL_PHOTO_URL + " VARCHAR")
+                LocalGroup.COL_NAME + " VARCHAR NOT NULL",
+                LocalGroup.COL_PHOTO_URL + " VARCHAR NOT NULL")
                 .execute(database);
         CREATE_TABLE(LocalPhoto.TABLE_NAME,
                 LocalPhoto.COL_ID + " LONG PRIMARY KEY NOT NULL",
-                LocalPhoto.COL_PHOTO_75 + " VARCHAR",
-                LocalPhoto.COL_PHOTO_130 + " VARCHAR",
+                LocalPhoto.COL_POST_ID + " LONG NOT NULL",
+                LocalPhoto.COL_POST_SRC_ID + " LONG NOT NULL",
+                LocalPhoto.COL_PHOTO_75 + " VARCHAR NOT NULL",
+                LocalPhoto.COL_PHOTO_130 + " VARCHAR NOT NULL",
                 LocalPhoto.COL_PHOTO_604 + " VARCHAR")
                 .execute(database);
         CREATE_TABLE(LocalProfile.TABLE_NAME,
                 LocalProfile.COL_ID + " LONG PRIMARY KEY NOT NULL",
-                LocalProfile.COL_FIRST_NAME + " VARCHAR",
-                LocalProfile.COL_LAST_NAME + " VARCHAR",
-                LocalProfile.COL_PHOTO_URL + " VARCHAR")
+                LocalProfile.COL_FIRST_NAME + " VARCHAR NOT NULL",
+                LocalProfile.COL_LAST_NAME + " VARCHAR NOT NULL",
+                LocalProfile.COL_PHOTO_URL + " VARCHAR NOT NULL")
                 .execute(database);
     }
 
@@ -73,5 +85,67 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                 .LIMIT(offset + ", " + count))
                 .run()
                 .mapToList(JoinedPostMapper.MAPPER);
+    }
+
+    @Override
+    public Observable<JoinedPost> getPost(long id, long sourceId) {
+        return null;
+    }
+
+    @Override
+    public void insertPosts(VKResponse<Newsfeed> newsfeedResponse) {
+        Newsfeed newsfeed = newsfeedResponse.getResponse();
+        BriteDatabase.Transaction transaction = newTransaction();
+        Observable<Long> groupsObservable = Observable.from(newsfeed.getGroups())
+                .flatMap(group -> insert(LocalGroup.TABLE_NAME,
+                        LocalGroupMapper.contentValues()
+                                .mId(group.getGroupId())
+                                .mName(group.getName())
+                                .mPhotoUrl(group.getPhotoUrl())
+                                .build())
+                );
+        Observable<Long> profilesObservable = Observable.from(newsfeed.getProfiles())
+                .flatMap(profile -> insert(LocalProfile.TABLE_NAME,
+                        LocalProfileMapper.contentValues()
+                                .mId(profile.getUserId())
+                                .mFirstName(profile.getFirstName())
+                                .mLastName(profile.getLastName())
+                                .mPhotoUrl(profile.getPhotoUrl())
+                                .build())
+                );
+        Observable<Long> postsObservable = Observable.from(newsfeed.getItems())
+                .flatMap(newsfeedItem -> insert(LocalNewsfeedItem.TABLE_NAME,
+                        LocalNewsfeedItemMapper.contentValues()
+                                .mId(newsfeedItem.getPostId())
+                                .mSourceId(newsfeedItem.getSourceId())
+                                .mText(newsfeedItem.getText())
+                                .mDate(new Date(newsfeedItem.getDate() * 1000))
+                                .mLikesCount(newsfeedItem.getLikesCount())
+                                .build())
+                );
+        Observable<Long> photosObservable = Observable.from(newsfeed.getItems())
+                .map(NewsfeedItem::getAttachments)
+                .filter(attachments -> attachments != null)
+                .flatMap(Observable::from)
+                .filter(attachment -> attachment.getType().equals("photo"))
+                .map(Attachment::getPhoto)
+                .flatMap(photo -> insert(LocalPhoto.TABLE_NAME,
+                        LocalPhotoMapper.contentValues()
+                                .mId(photo.getId())
+                                .mPhoto75(photo.getPhoto75())
+                                .mPhoto130(photo.getPhoto130())
+                                .mPhoto604(photo.getPhoto604())
+                                .build()));
+        Observable.concat(groupsObservable, profilesObservable, postsObservable, photosObservable)
+                .subscribe(id -> {
+                        }, throwable -> {
+                            throwable.printStackTrace();
+                            transaction.end();
+                        },
+                        () -> {
+                            transaction.markSuccessful();
+                            transaction.end();
+                        });
+
     }
 }

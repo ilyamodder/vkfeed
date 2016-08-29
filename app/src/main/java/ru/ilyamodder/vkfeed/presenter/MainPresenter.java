@@ -53,11 +53,10 @@ public class MainPresenter {
                 new Func1<String, Observable<JoinedPostsResponse>>() {
                     @Override
                     public Observable<JoinedPostsResponse> call(String s) {
-                        return Converters.toJoinedPost(RepositoryProvider.getRemoteRepository()
-                                .getNewsfeed(s, ROWS_PER_PAGE))
-                                .doOnEach(list -> {
-
-                                })
+                        return RepositoryProvider.getRemoteRepository()
+                                .getNewsfeed(s, ROWS_PER_PAGE)
+                                .doOnNext(RepositoryProvider.getLocalRepository()::insertPosts)
+                                .flatMap(Converters::toJoinedPost)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }

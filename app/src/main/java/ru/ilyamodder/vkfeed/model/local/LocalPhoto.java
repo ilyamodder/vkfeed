@@ -11,7 +11,7 @@ public class LocalPhoto {
     public static final String TABLE_NAME = "photos";
     public static final String COL_ID = "_id";
     public static final String COL_POST_ID = "post_id";
-    public static final String COL_POST_SRC_ID = "post_id";
+    public static final String COL_POST_SRC_ID = "post_src_id";
     public static final String COL_PHOTO_75 = "photo_75";
     public static final String COL_PHOTO_130 = "photo_130";
     public static final String COL_PHOTO_604 = "photo_604";
