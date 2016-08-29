@@ -23,26 +23,31 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
     @Override
     public void createTable(SQLiteDatabase database) {
         CREATE_TABLE(LocalNewsfeedItem.TABLE_NAME,
-                LocalNewsfeedItem.COL_ID + " LONG PRIMARY KEY NOT NULL",
+                LocalNewsfeedItem.COL_ID + " LONG NOT NULL",
+                LocalNewsfeedItem.COL_SOURCE_ID + " LONG NOT NULL",
                 LocalNewsfeedItem.COL_DATE + " LONG",
-                LocalNewsfeedItem.COL_IS_PROFILE_SRC + " BOOLEAN",
-                LocalNewsfeedItem.COL_SOURCE_ID + " LONG",
                 LocalNewsfeedItem.COL_TEXT + " TEXT",
-                LocalNewsfeedItem.COL_LIKES_COUNT + " INTEGER").execute(database);
+                LocalNewsfeedItem.COL_LIKES_COUNT + " INTEGER",
+                "PRIMARY KEY (" + LocalNewsfeedItem.COL_ID + ", "
+                        + LocalNewsfeedItem.COL_SOURCE_ID + ")")
+                .execute(database);
         CREATE_TABLE(LocalGroup.TABLE_NAME,
                 LocalGroup.COL_ID + " LONG PRIMARY KEY NOT NULL",
                 LocalGroup.COL_NAME + " VARCHAR",
-                LocalGroup.COL_PHOTO_URL + " VARCHAR");
+                LocalGroup.COL_PHOTO_URL + " VARCHAR")
+                .execute(database);
         CREATE_TABLE(LocalPhoto.TABLE_NAME,
                 LocalPhoto.COL_ID + " LONG PRIMARY KEY NOT NULL",
                 LocalPhoto.COL_PHOTO_75 + " VARCHAR",
                 LocalPhoto.COL_PHOTO_130 + " VARCHAR",
-                LocalPhoto.COL_PHOTO_604 + " VARCHAR");
+                LocalPhoto.COL_PHOTO_604 + " VARCHAR")
+                .execute(database);
         CREATE_TABLE(LocalProfile.TABLE_NAME,
                 LocalProfile.COL_ID + " LONG PRIMARY KEY NOT NULL",
                 LocalProfile.COL_FIRST_NAME + " VARCHAR",
                 LocalProfile.COL_LAST_NAME + " VARCHAR",
-                LocalProfile.COL_PHOTO_URL + " VARCHAR");
+                LocalProfile.COL_PHOTO_URL + " VARCHAR")
+                .execute(database);
     }
 
     @Override
@@ -58,12 +63,12 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                 "COALESCE(" + LocalGroup.COL_PHOTO_URL + ", " + LocalProfile.COL_PHOTO_URL + " AS avatar")
                 .FROM(LocalNewsfeedItem.TABLE_NAME)
                 .LEFT_OUTER_JOIN(LocalProfile.TABLE_NAME)
-                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_IS_PROFILE_SRC + " AND " +
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + ">0 AND " +
                         LocalProfile.TABLE_NAME + "." + LocalProfile.COL_ID + " = " +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LEFT_OUTER_JOIN(LocalGroup.TABLE_NAME)
-                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_IS_PROFILE_SRC + " = 0 AND " +
-                        LocalGroup.TABLE_NAME + "." + LocalGroup.COL_ID + " = " +
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + "< = 0 AND " +
+                        LocalGroup.TABLE_NAME + "." + LocalGroup.COL_ID + " = (-1)*" +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LIMIT(offset + ", " + count))
                 .run()

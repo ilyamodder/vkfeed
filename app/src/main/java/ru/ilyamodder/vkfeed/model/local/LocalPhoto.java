@@ -11,6 +11,7 @@ public class LocalPhoto {
     public static final String TABLE_NAME = "photos";
     public static final String COL_ID = "_id";
     public static final String COL_POST_ID = "post_id";
+    public static final String COL_POST_SRC_ID = "post_id";
     public static final String COL_PHOTO_75 = "photo_75";
     public static final String COL_PHOTO_130 = "photo_130";
     public static final String COL_PHOTO_604 = "photo_604";
@@ -19,6 +20,8 @@ public class LocalPhoto {
     long mId;
     @Column(COL_POST_ID)
     long mPostId;
+    @Column(COL_POST_SRC_ID)
+    long mPostSrcId;
     @Column(COL_PHOTO_75)
     String mPhoto75;
     @Column(COL_PHOTO_130)
@@ -29,9 +32,10 @@ public class LocalPhoto {
     public LocalPhoto() {
     }
 
-    public LocalPhoto(long id, long postId, String photo75, String photo130, String photo604) {
+    public LocalPhoto(long id, long postId, long postSrcId, String photo75, String photo130, String photo604) {
         mId = id;
         mPostId = postId;
+        mPostSrcId = mPostSrcId;
         mPhoto75 = photo75;
         mPhoto130 = photo130;
         mPhoto604 = photo604;
@@ -43,6 +47,10 @@ public class LocalPhoto {
 
     public long getPostId() {
         return mPostId;
+    }
+
+    public long getPostSrcId() {
+        return mPostSrcId;
     }
 
     public String getPhoto75() {

@@ -29,6 +29,8 @@ public class JoinedPost implements Parcelable {
     };
     @Column("_id")
     long mId;
+    @Column("src_id")
+    long mSrcId;
     @Column("name")
     String mName;
     @Column("date")
@@ -44,9 +46,10 @@ public class JoinedPost implements Parcelable {
     public JoinedPost() {
     }
 
-    public JoinedPost(long id, String name, Date date, String avatar, String text,
+    public JoinedPost(long id, long srcId, String name, Date date, String avatar, String text,
                       List<String> photos, int likesCount) {
         mId = id;
+        mSrcId = srcId;
         mName = name;
         mDate = date;
         mAvatar = avatar;
@@ -57,6 +60,7 @@ public class JoinedPost implements Parcelable {
 
     protected JoinedPost(Parcel in) {
         mId = in.readLong();
+        mSrcId = in.readLong();
         mName = in.readString();
         mAvatar = in.readString();
         mText = in.readString();
@@ -67,6 +71,7 @@ public class JoinedPost implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mId);
+        dest.writeLong(mSrcId);
         dest.writeString(mName);
         dest.writeString(mAvatar);
         dest.writeString(mText);
@@ -81,6 +86,10 @@ public class JoinedPost implements Parcelable {
 
     public long getId() {
         return mId;
+    }
+
+    public long getSrcId() {
+        return mSrcId;
     }
 
     public String getName() {
@@ -106,5 +115,9 @@ public class JoinedPost implements Parcelable {
 
     public List<String> getPhotos() {
         return mPhotos;
+    }
+
+    public int getLikesCount() {
+        return mLikesCount;
     }
 }
