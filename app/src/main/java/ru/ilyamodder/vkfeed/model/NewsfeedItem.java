@@ -57,6 +57,7 @@ public class NewsfeedItem {
     }
 
     private static class Likes {
+        @SerializedName("count")
         int mCount;
 
         public Likes() {
