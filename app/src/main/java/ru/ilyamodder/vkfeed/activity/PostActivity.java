@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.adapter.PhotosAdapter;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
@@ -61,7 +62,12 @@ public class PostActivity extends AppCompatActivity implements PostView {
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setAutoMeasureEnabled(true);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setNestedScrollingEnabled(false);
+
         mPresenter = new PostPresenter(this, this, getIntent().getLongExtra(EXTRA_POST_ID, 0),
                 getIntent().getLongExtra(EXTRA_SOURCE_ID, 0));
         mPresenter.onActivityCreate();
@@ -83,6 +89,7 @@ public class PostActivity extends AppCompatActivity implements PostView {
 
         Glide.with(this)
                 .load(post.getAvatar())
+                .bitmapTransform(new CropCircleTransformation(this))
                 .into(mAvatar);
 
         if (!post.getPhotos().isEmpty()) {
