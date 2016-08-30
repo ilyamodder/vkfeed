@@ -167,7 +167,7 @@ public class MainPresenter {
     }
 
     public void onItemClick(long id, long srcId) {
-        Log.d("debug", srcId + "_" + id + " clicked");
+        mView.showPostActivity(id, srcId);
     }
 
     public void refresh() {

@@ -5,19 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import ru.ilyamodder.vkfeed.R;
+import ru.ilyamodder.vkfeed.model.local.JoinedPost;
+import ru.ilyamodder.vkfeed.presenter.PostPresenter;
+import ru.ilyamodder.vkfeed.view.PostView;
 
 /**
  * Created by ilya on 30.08.16.
  */
 
-public class PostActivity extends AppCompatActivity {
+public class PostActivity extends AppCompatActivity implements PostView {
     public static final String EXTRA_POST_ID = "post_id";
     public static final String EXTRA_SOURCE_ID = "source_id";
     @BindView(R.id.avatar)
@@ -31,6 +36,8 @@ public class PostActivity extends AppCompatActivity {
     @BindView(R.id.likesCount)
     TextView mLikesCount;
 
+    private PostPresenter mPresenter;
+
     public static void start(Context context, long postId, long sourceId) {
         Intent intent = new Intent(context, PostActivity.class);
         intent.putExtra(EXTRA_POST_ID, postId);
@@ -43,10 +50,19 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
+        mPresenter = new PostPresenter(this, this, getIntent().getLongExtra(EXTRA_POST_ID, 0),
+                getIntent().getLongExtra(EXTRA_SOURCE_ID, 0));
+        mPresenter.onActivityCreate();
     }
 
-    @OnClick(R.id.like)
-    public void onLikeClick() {
-
+    @Override
+    public void showPost(JoinedPost post) {
+        mCaption.setText(post.getName());
+        mDate.setText(DateUtils.getRelativeTimeSpanString(this, post.getDate().getTime()));
+        mText.setText(post.getText());
+        mLikesCount.setText(String.valueOf(post.getLikesCount()));
+        Glide.with(this)
+                .load(post.getAvatar())
+                .into(mAvatar);
     }
 }

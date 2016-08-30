@@ -18,4 +18,6 @@ public interface MainView {
     void showError();
 
     void showLoginActivity();
+
+    void showPostActivity(long id, long srcId);
 }

@@ -95,7 +95,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                         LocalProfile.TABLE_NAME + "." + LocalProfile.COL_ID + " = " +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LEFT_OUTER_JOIN(LocalGroup.TABLE_NAME)
-                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + " <= 0 AND " +
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + " < 0 AND " +
                         LocalGroup.TABLE_NAME + "." + LocalGroup.COL_ID + " = (-1)*" +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LIMIT(offset + ", " + count))
@@ -105,7 +105,38 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
 
     @Override
     public Observable<JoinedPost> getPost(long id, long sourceId) {
-        return null;
+        return query(SELECT(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_ID,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_DATE,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_TEXT,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_LIKES_COUNT,
+                "coalesce(" + LocalProfile.TABLE_NAME + "." + LocalProfile.COL_FIRST_NAME +
+                        " || ' ' ||  " +
+                        LocalProfile.TABLE_NAME + "." + LocalProfile.COL_LAST_NAME +
+                        ", " + LocalGroup.TABLE_NAME + "." + LocalGroup.COL_NAME + ") AS name",
+                "COALESCE(" + LocalGroup.TABLE_NAME + "." + LocalGroup.COL_PHOTO_URL +
+                        ", " + LocalProfile.TABLE_NAME + "." + LocalProfile.COL_PHOTO_URL + ") AS avatar",
+                "(SELECT GROUP_CONCAT(" + LocalPhoto.TABLE_NAME + "." + LocalPhoto.COL_PHOTO_604 +
+                        ") FROM " + LocalPhoto.TABLE_NAME +
+                        " WHERE " + LocalPhoto.TABLE_NAME + "." + LocalPhoto.COL_POST_ID + " = " +
+                        LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_ID + " AND " +
+                        LocalPhoto.TABLE_NAME + "." + LocalPhoto.COL_POST_SRC_ID + " = " +
+                        LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + ") AS photos")
+                .FROM(LocalNewsfeedItem.TABLE_NAME)
+                .LEFT_OUTER_JOIN(LocalProfile.TABLE_NAME)
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + " >0 AND " +
+                        LocalProfile.TABLE_NAME + "." + LocalProfile.COL_ID + " = " +
+                        LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
+                .LEFT_OUTER_JOIN(LocalGroup.TABLE_NAME)
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID +
+                        " < 0 AND " + LocalGroup.TABLE_NAME + "." + LocalGroup.COL_ID + " = (-1)*" +
+                        LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
+                .WHERE(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_ID + "=" + id +
+                        " AND " +
+                        LocalNewsfeedItem.TABLE_NAME + "." +
+                        LocalNewsfeedItem.COL_SOURCE_ID + "=" + sourceId))
+                .run()
+                .mapToOne(JoinedPostMapper.MAPPER);
     }
 
     @Override

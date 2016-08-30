@@ -111,4 +111,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void showLoginActivity() {
         LoginActivity.startAsRootActivity(this);
     }
+
+    @Override
+    public void showPostActivity(long id, long srcId) {
+        PostActivity.start(this, id, srcId);
+    }
 }

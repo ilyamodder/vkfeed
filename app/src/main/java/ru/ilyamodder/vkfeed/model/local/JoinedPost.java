@@ -110,7 +110,11 @@ public class JoinedPost implements Parcelable {
 
     @Column(value = "photos", throwOnColumnIndexNotFound = false)
     public void setRawPhotos(String rawPhotos) {
-        mPhotos = new ArrayList<>(Arrays.asList(rawPhotos.split(",")));
+        if (rawPhotos != null) {
+            mPhotos = new ArrayList<>(Arrays.asList(rawPhotos.split(",")));
+        } else {
+            mPhotos = new ArrayList<>();
+        }
     }
 
     public List<String> getPhotos() {
