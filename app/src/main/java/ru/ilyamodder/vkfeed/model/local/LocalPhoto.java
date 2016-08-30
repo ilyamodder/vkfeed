@@ -35,7 +35,7 @@ public class LocalPhoto {
     public LocalPhoto(long id, long postId, long postSrcId, String photo75, String photo130, String photo604) {
         mId = id;
         mPostId = postId;
-        mPostSrcId = mPostSrcId;
+        mPostSrcId = postSrcId;
         mPhoto75 = photo75;
         mPhoto130 = photo130;
         mPhoto604 = photo604;
