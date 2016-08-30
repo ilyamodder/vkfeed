@@ -101,7 +101,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                                 .mId(group.getGroupId())
                                 .mName(group.getName())
                                 .mPhotoUrl(group.getPhotoUrl())
-                                .build())
+                                .build(), SQLiteDatabase.CONFLICT_REPLACE)
                 );
         Observable<Long> profilesObservable = Observable.from(newsfeed.getProfiles())
                 .flatMap(profile -> insert(LocalProfile.TABLE_NAME,
@@ -110,7 +110,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                                 .mFirstName(profile.getFirstName())
                                 .mLastName(profile.getLastName())
                                 .mPhotoUrl(profile.getPhotoUrl())
-                                .build())
+                                .build(), SQLiteDatabase.CONFLICT_REPLACE)
                 );
         Observable<Long> postsObservable = Observable.from(newsfeed.getItems())
                 .flatMap(newsfeedItem -> insert(LocalNewsfeedItem.TABLE_NAME,
@@ -120,7 +120,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                                 .mText(newsfeedItem.getText())
                                 .mDate(new Date(newsfeedItem.getDate() * 1000))
                                 .mLikesCount(newsfeedItem.getLikesCount())
-                                .build())
+                                .build(), SQLiteDatabase.CONFLICT_REPLACE)
                 );
         Observable<Long> photosObservable = Observable.from(newsfeed.getItems())
                 .flatMap(Converters::toLocalPhotos)
@@ -132,7 +132,7 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                                 .mPhoto75(photo.getPhoto75())
                                 .mPhoto130(photo.getPhoto130())
                                 .mPhoto604(photo.getPhoto604())
-                                .build()));
+                                .build(), SQLiteDatabase.CONFLICT_REPLACE));
         Observable.concat(groupsObservable, profilesObservable, postsObservable, photosObservable)
                 .subscribe(id -> {
                         }, throwable -> {
