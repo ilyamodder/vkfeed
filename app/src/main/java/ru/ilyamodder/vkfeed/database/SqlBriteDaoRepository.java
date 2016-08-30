@@ -8,9 +8,7 @@ import com.squareup.sqlbrite.BriteDatabase;
 import java.util.Date;
 import java.util.List;
 
-import ru.ilyamodder.vkfeed.model.Attachment;
 import ru.ilyamodder.vkfeed.model.Newsfeed;
-import ru.ilyamodder.vkfeed.model.NewsfeedItem;
 import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 import ru.ilyamodder.vkfeed.model.local.JoinedPostMapper;
@@ -23,6 +21,7 @@ import ru.ilyamodder.vkfeed.model.local.LocalPhotoMapper;
 import ru.ilyamodder.vkfeed.model.local.LocalProfile;
 import ru.ilyamodder.vkfeed.model.local.LocalProfileMapper;
 import ru.ilyamodder.vkfeed.repository.LocalRepository;
+import ru.ilyamodder.vkfeed.rx.Converters;
 import rx.Observable;
 
 /**
@@ -124,14 +123,12 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                                 .build())
                 );
         Observable<Long> photosObservable = Observable.from(newsfeed.getItems())
-                .map(NewsfeedItem::getAttachments)
-                .filter(attachments -> attachments != null)
-                .flatMap(Observable::from)
-                .filter(attachment -> attachment.getType().equals("photo"))
-                .map(Attachment::getPhoto)
+                .flatMap(Converters::toLocalPhotos)
                 .flatMap(photo -> insert(LocalPhoto.TABLE_NAME,
                         LocalPhotoMapper.contentValues()
                                 .mId(photo.getId())
+                                .mPostId(photo.getPostId())
+                                .mPostSrcId(photo.getPostSrcId())
                                 .mPhoto75(photo.getPhoto75())
                                 .mPhoto130(photo.getPhoto130())
                                 .mPhoto604(photo.getPhoto604())

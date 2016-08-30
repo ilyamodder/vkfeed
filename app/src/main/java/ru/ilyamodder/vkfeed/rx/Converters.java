@@ -12,6 +12,7 @@ import ru.ilyamodder.vkfeed.model.Profile;
 import ru.ilyamodder.vkfeed.model.VKResponse;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
 import ru.ilyamodder.vkfeed.model.local.JoinedPostsResponse;
+import ru.ilyamodder.vkfeed.model.local.LocalPhoto;
 import rx.Observable;
 
 /**
@@ -64,5 +65,18 @@ public class Converters {
                 .toList()
                 .toBlocking()
                 .first();
+    }
+
+    public static Observable<LocalPhoto> toLocalPhotos(NewsfeedItem item) {
+        long postId = item.getPostId();
+        long sourceId = item.getSourceId();
+        return Observable.just(item)
+                .map(NewsfeedItem::getAttachments)
+                .filter(list -> list != null)
+                .flatMap(Observable::from)
+                .filter(attachment -> attachment.getType().equals("photo"))
+                .map(Attachment::getPhoto)
+                .map(photo -> new LocalPhoto(photo.getId(), postId, sourceId,
+                        photo.getPhoto75(), photo.getPhoto130(), photo.getPhoto604()));
     }
 }
