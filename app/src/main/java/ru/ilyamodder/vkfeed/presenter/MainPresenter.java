@@ -114,10 +114,9 @@ public class MainPresenter {
         mNetworkLoader.restart(mNextOffset);
     }
 
-    public void onItemClick(long id) {
-        Log.d("debug", id + " clicked");
+    public void onItemClick(long id, long srcId) {
+        Log.d("debug", srcId + "_" + id + " clicked");
     }
-
 
     public void refresh() {
         mNextOffset = "";

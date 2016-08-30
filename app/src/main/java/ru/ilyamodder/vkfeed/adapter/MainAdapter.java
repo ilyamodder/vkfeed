@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
-import rx.functions.Action1;
+import rx.functions.Action2;
 
 /**
  * Created by ilya on 25.08.16.
@@ -29,9 +29,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private List<JoinedPost> mPosts;
     private Context mContext;
-    private Action1<Long> mClickListener;
+    private Action2<Long, Long> mClickListener;
 
-    public MainAdapter(Context context, Action1<Long> clickListener) {
+    public MainAdapter(Context context, Action2<Long, Long> clickListener) {
         mPosts = new ArrayList<>();
         mContext = context;
         mClickListener = clickListener;
@@ -55,7 +55,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.mDate.setText(DateUtils.getRelativeTimeSpanString(mContext,
                 post.getDate().getTime()));
 
-        holder.itemView.setOnClickListener(view -> mClickListener.call(post.getId()));
+        holder.itemView.setOnClickListener(view -> mClickListener.call(post.getId(), post.getSrcId()));
     }
 
     @Override

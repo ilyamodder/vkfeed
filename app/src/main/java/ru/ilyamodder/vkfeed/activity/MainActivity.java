@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MainAdapter(this, id -> mPresenter.onItemClick(id));
+        mAdapter = new MainAdapter(this, (id, srcId) -> mPresenter.onItemClick(id, srcId));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisiblesItems, visibleItemCount, totalItemCount;
