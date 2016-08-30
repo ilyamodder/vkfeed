@@ -29,7 +29,7 @@ public class JoinedPost implements Parcelable {
     };
     @Column("_id")
     long mId;
-    @Column("src_id")
+    @Column("source_id")
     long mSrcId;
     @Column("name")
     String mName;
@@ -108,7 +108,7 @@ public class JoinedPost implements Parcelable {
         return mText;
     }
 
-    @Column("photos")
+    @Column(value = "photos", throwOnColumnIndexNotFound = false)
     public void setRawPhotos(String rawPhotos) {
         mPhotos = new ArrayList<>(Arrays.asList(rawPhotos.split(",")));
     }

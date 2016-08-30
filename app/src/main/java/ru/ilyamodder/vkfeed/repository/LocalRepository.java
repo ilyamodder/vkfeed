@@ -17,4 +17,10 @@ public interface LocalRepository {
     Observable<JoinedPost> getPost(long id, long sourceId);
 
     void insertPosts(VKResponse<Newsfeed> newsfeed);
+
+    String getNextOffset();
+
+    void setNextOffset(String nextOffset);
+
+    void clearAll();
 }

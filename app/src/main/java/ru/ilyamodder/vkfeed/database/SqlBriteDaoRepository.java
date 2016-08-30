@@ -1,6 +1,8 @@
 package ru.ilyamodder.vkfeed.database;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 
 import com.hannesdorfmann.sqlbrite.dao.Dao;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -29,6 +31,14 @@ import rx.Observable;
  */
 
 public class SqlBriteDaoRepository extends Dao implements LocalRepository {
+    public static final String NEXT_OFFSET_KEY = "next_offset";
+
+    private Context mContext;
+
+    public SqlBriteDaoRepository(Context context) {
+        mContext = context;
+    }
+
     @Override
     public void createTable(SQLiteDatabase database) {
         CREATE_TABLE(LocalNewsfeedItem.TABLE_NAME,
@@ -68,17 +78,24 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
 
     @Override
     public Observable<List<JoinedPost>> getNewsfeed(int offset, int count) {
-        return query(SELECT(LocalNewsfeedItem.COL_ID, LocalNewsfeedItem.COL_DATE,
-                LocalNewsfeedItem.COL_TEXT, "coalesce(p." + LocalProfile.COL_FIRST_NAME + " || p."
-                        + LocalProfile.COL_LAST_NAME + ", g." + LocalGroup.COL_NAME + ") AS name",
-                "COALESCE(" + LocalGroup.COL_PHOTO_URL + ", " + LocalProfile.COL_PHOTO_URL + " AS avatar")
+        return query(SELECT(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_ID,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_DATE,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_TEXT,
+                LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_LIKES_COUNT,
+                "coalesce(" + LocalProfile.TABLE_NAME + "." + LocalProfile.COL_FIRST_NAME +
+                        " || ' ' ||  " +
+                        LocalProfile.TABLE_NAME + "." + LocalProfile.COL_LAST_NAME +
+                        ", " + LocalGroup.TABLE_NAME + "." + LocalGroup.COL_NAME + ") AS name",
+                "COALESCE(" + LocalGroup.TABLE_NAME + "." + LocalGroup.COL_PHOTO_URL +
+                        ", " + LocalProfile.TABLE_NAME + "." + LocalProfile.COL_PHOTO_URL + ") AS avatar")
                 .FROM(LocalNewsfeedItem.TABLE_NAME)
                 .LEFT_OUTER_JOIN(LocalProfile.TABLE_NAME)
-                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + ">0 AND " +
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + " >0 AND " +
                         LocalProfile.TABLE_NAME + "." + LocalProfile.COL_ID + " = " +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LEFT_OUTER_JOIN(LocalGroup.TABLE_NAME)
-                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + "< = 0 AND " +
+                .ON(LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID + " <= 0 AND " +
                         LocalGroup.TABLE_NAME + "." + LocalGroup.COL_ID + " = (-1)*" +
                         LocalNewsfeedItem.TABLE_NAME + "." + LocalNewsfeedItem.COL_SOURCE_ID)
                 .LIMIT(offset + ", " + count))
@@ -145,4 +162,36 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                         });
 
     }
+
+    @Override
+    public String getNextOffset() {
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString(NEXT_OFFSET_KEY, "");
+    }
+
+    @Override
+    public void setNextOffset(String nextOffset) {
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit().putString(NEXT_OFFSET_KEY, nextOffset).apply();
+    }
+
+    @Override
+    public void clearAll() {
+        BriteDatabase.Transaction transaction = newTransaction();
+        delete(LocalPhoto.TABLE_NAME)
+                .concatWith(delete(LocalGroup.TABLE_NAME))
+                .concatWith(delete(LocalNewsfeedItem.TABLE_NAME))
+                .concatWith(delete(LocalProfile.TABLE_NAME))
+                .subscribe(integer -> {
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
+                            transaction.end();
+                        },
+                        () -> {
+                            transaction.markSuccessful();
+                            transaction.end();
+                        });
+    }
+
+
 }

@@ -37,7 +37,7 @@ public class VKFeedApp extends Application {
             Log.d("fingerprint", VKUtil.getCertificateFingerprint(this, this.getPackageName())[0]);
         }
 
-        SqlBriteDaoRepository daoRepository = new SqlBriteDaoRepository();
+        SqlBriteDaoRepository daoRepository = new SqlBriteDaoRepository(this);
 
         RepositoryProvider.setLocalRepository(daoRepository);
         RepositoryProvider.setRemoteRepository(new VKRemoteRepository(this));
