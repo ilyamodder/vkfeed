@@ -26,6 +26,14 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.keystore')
+            storePassword 'android'
+        }
+    }
 }
 
 dependencies {
