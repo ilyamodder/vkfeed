@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.vk.sdk.VKSdk;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +136,7 @@ public class MainPresenter {
     }
 
     public void onActivityCreate(Bundle savedInstanceState) {
-        if (!VKSdk.isLoggedIn()) {
+        if (!RepositoryProvider.getRemoteRepository().isLoggedIn()) {
             mView.showLoginActivity();
             return;
         }
@@ -183,7 +181,7 @@ public class MainPresenter {
     }
 
     public void logout() {
-        VKSdk.logout();
+        RepositoryProvider.getRemoteRepository().logout();
         mView.showLoginActivity();
     }
 }
