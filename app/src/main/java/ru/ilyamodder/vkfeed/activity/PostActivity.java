@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,6 +64,7 @@ public class PostActivity extends AppCompatActivity implements PostView {
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
@@ -71,6 +74,16 @@ public class PostActivity extends AppCompatActivity implements PostView {
         mPresenter = new PostPresenter(this, this, getIntent().getLongExtra(EXTRA_POST_ID, 0),
                 getIntent().getLongExtra(EXTRA_SOURCE_ID, 0));
         mPresenter.onActivityCreate();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
