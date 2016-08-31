@@ -1,6 +1,5 @@
 package ru.ilyamodder.vkfeed.presenter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -34,7 +33,6 @@ public class MainPresenter {
             "ru.ilyamodder.vkfeed.presenter.MainPresenter.POSTS";
     private static final String PAGES_LOADED =
             "ru.ilyamodder.vkfeed.presenter.MainPresenter.PAGES_LOADED";
-    private Activity mActivity;
     private MainView mView;
     private RxLoaderManager mRxLoaderManager;
     private String mNextOffset;
@@ -44,10 +42,9 @@ public class MainPresenter {
     private RxLoader1<String, JoinedPostsResponse> mNetworkLoader;
     private RxLoader2<Integer, Integer, List<JoinedPost>> mCacheLoader;
 
-    public MainPresenter(Activity activity, MainView view) {
-        mActivity = activity;
+    public MainPresenter(MainView view, RxLoaderManager rxLoaderManager) {
         mView = view;
-        mRxLoaderManager = RxLoaderManager.get(mActivity);
+        mRxLoaderManager = rxLoaderManager;
         mNextOffset = "";
         mPagesLoaded = 0;
         mPosts = new ArrayList<>();

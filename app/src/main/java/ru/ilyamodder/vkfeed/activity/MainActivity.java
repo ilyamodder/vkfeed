@@ -16,6 +16,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.tatarka.rxloader.RxLoaderManager;
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.adapter.MainAdapter;
 import ru.ilyamodder.vkfeed.model.local.JoinedPost;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh());
 
-        mPresenter = new MainPresenter(this, this);
+        mPresenter = new MainPresenter(this, RxLoaderManager.get(this));
         mPresenter.onActivityCreate(savedInstanceState);
     }
 

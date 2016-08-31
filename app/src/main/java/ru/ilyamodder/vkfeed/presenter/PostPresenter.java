@@ -1,7 +1,5 @@
 package ru.ilyamodder.vkfeed.presenter;
 
-import android.app.Activity;
-
 import me.tatarka.rxloader.RxLoaderManager;
 import me.tatarka.rxloader.RxLoaderObserver;
 import ru.ilyamodder.vkfeed.api.RepositoryProvider;
@@ -15,17 +13,15 @@ import rx.schedulers.Schedulers;
 
 public class PostPresenter {
     private PostView mView;
-    private Activity mActivity;
     private RxLoaderManager mLoaderManager;
     private long mPostId;
     private long mSourceId;
 
-    public PostPresenter(PostView view, Activity activity, long postId, long sourceId) {
+    public PostPresenter(PostView view, RxLoaderManager rxLoaderManager, long postId, long sourceId) {
         mView = view;
-        mActivity = activity;
+        mLoaderManager = rxLoaderManager;
         mPostId = postId;
         mSourceId = sourceId;
-        mLoaderManager = RxLoaderManager.get(activity);
     }
 
     public void onActivityCreate() {
