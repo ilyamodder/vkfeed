@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/avatar"
             android:layout_alignLeft="@id/caption"
+            android:layout_alignStart="@id/caption"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="14sp"

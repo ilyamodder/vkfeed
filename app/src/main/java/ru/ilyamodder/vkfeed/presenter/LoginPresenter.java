@@ -2,15 +2,8 @@ package ru.ilyamodder.vkfeed.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCallback;
-import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKError;
-
-import me.tatarka.rxloader.RxLoaderManager;
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.api.RepositoryProvider;
 import ru.ilyamodder.vkfeed.view.LoginView;
