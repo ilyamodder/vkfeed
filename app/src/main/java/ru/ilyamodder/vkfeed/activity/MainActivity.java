@@ -12,8 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.vk.sdk.VKSdk;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -77,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         mPresenter = new MainPresenter(this, this);
         mPresenter.onActivityCreate(savedInstanceState);
-        if (!VKSdk.isLoggedIn()) {
-            LoginActivity.startAsRootActivity(this);
-        }
     }
 
     @Override
