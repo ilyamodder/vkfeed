@@ -23,4 +23,8 @@ public interface LocalRepository {
     void setNextOffset(String nextOffset);
 
     void clearAll();
+
+    void logout();
+
+    boolean isLoggedIn();
 }

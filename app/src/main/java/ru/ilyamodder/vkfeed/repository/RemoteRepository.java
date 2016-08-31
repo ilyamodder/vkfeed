@@ -18,8 +18,4 @@ public interface RemoteRepository {
                                   Observer<String> observer);
 
     Observable<VKResponse<Newsfeed>> getNewsfeed(String startFrom, int count);
-
-    void logout();
-
-    boolean isLoggedIn();
 }

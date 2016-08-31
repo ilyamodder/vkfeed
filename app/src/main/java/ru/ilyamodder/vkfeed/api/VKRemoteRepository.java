@@ -76,14 +76,4 @@ public class VKRemoteRepository implements RemoteRepository {
     public Observable<VKResponse<Newsfeed>> getNewsfeed(String startFrom, int count) {
         return mService.getNewsfeed(startFrom, count);
     }
-
-    @Override
-    public void logout() {
-        VKSdk.logout();
-    }
-
-    @Override
-    public boolean isLoggedIn() {
-        return VKSdk.isLoggedIn();
-    }
 }

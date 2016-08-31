@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.hannesdorfmann.sqlbrite.dao.Dao;
 import com.squareup.sqlbrite.BriteDatabase;
+import com.vk.sdk.VKSdk;
 
 import java.util.Date;
 import java.util.List;
@@ -224,5 +225,13 @@ public class SqlBriteDaoRepository extends Dao implements LocalRepository {
                         });
     }
 
+    @Override
+    public void logout() {
+        VKSdk.logout();
+    }
 
+    @Override
+    public boolean isLoggedIn() {
+        return VKSdk.isLoggedIn();
+    }
 }
