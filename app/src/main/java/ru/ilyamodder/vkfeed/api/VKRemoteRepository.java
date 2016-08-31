@@ -1,7 +1,6 @@
 package ru.ilyamodder.vkfeed.api;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.vk.sdk.VKAccessToken;
@@ -27,11 +26,9 @@ import rx.Observer;
  */
 
 public class VKRemoteRepository implements RemoteRepository {
-    private Context mContext;
     private VKService mService;
 
-    public VKRemoteRepository(Context mContext) {
-        this.mContext = mContext;
+    public VKRemoteRepository() {
         mService = createRetrofitService();
     }
 

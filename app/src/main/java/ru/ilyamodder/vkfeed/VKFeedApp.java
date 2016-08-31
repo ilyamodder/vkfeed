@@ -40,7 +40,7 @@ public class VKFeedApp extends Application {
         SqlBriteDaoRepository daoRepository = new SqlBriteDaoRepository(this);
 
         RepositoryProvider.setLocalRepository(daoRepository);
-        RepositoryProvider.setRemoteRepository(new VKRemoteRepository(this));
+        RepositoryProvider.setRemoteRepository(new VKRemoteRepository());
 
         DaoManager daoManager = DaoManager.with(this)
                 .databaseName("cache.db")
