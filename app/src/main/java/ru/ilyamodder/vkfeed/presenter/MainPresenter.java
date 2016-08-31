@@ -133,7 +133,7 @@ public class MainPresenter {
     }
 
     public void onActivityCreate(Bundle savedInstanceState) {
-        if (!RepositoryProvider.getRemoteRepository().isLoggedIn()) {
+        if (!RepositoryProvider.getLocalRepository().isLoggedIn()) {
             mView.showLoginActivity();
             return;
         }
@@ -178,7 +178,7 @@ public class MainPresenter {
     }
 
     public void logout() {
-        RepositoryProvider.getRemoteRepository().logout();
+        RepositoryProvider.getLocalRepository().logout();
         mView.showLoginActivity();
     }
 }
