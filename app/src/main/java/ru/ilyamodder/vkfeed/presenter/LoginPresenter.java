@@ -2,7 +2,6 @@ package ru.ilyamodder.vkfeed.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 import ru.ilyamodder.vkfeed.R;
 import ru.ilyamodder.vkfeed.api.RepositoryProvider;
@@ -33,7 +32,7 @@ public class LoginPresenter {
 
             @Override
             public void onError(Throwable e) {
-                Log.e("vk login", "error: " + e.toString());
+                e.printStackTrace();
             }
 
             @Override
