@@ -24,7 +24,8 @@ public class LoginPresenter {
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        return RepositoryProvider.getRemoteRepository().processActivityResult(requestCode, resultCode, data, new Observer<String>() {
+        return RepositoryProvider.getRemoteRepository().processActivityResult(requestCode,
+                resultCode, data, new Observer<String>() {
             @Override
             public void onCompleted() {
                 mView.showMainActivity();
@@ -43,6 +44,7 @@ public class LoginPresenter {
     }
 
     public void onLoginButtonClicked() {
-        RepositoryProvider.getRemoteRepository().login(mActivity, mActivity.getResources().getStringArray(R.array.vk_app_scope));
+        RepositoryProvider.getRemoteRepository().login(mActivity,
+                mActivity.getResources().getStringArray(R.array.vk_app_scope));
     }
 }
