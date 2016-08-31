@@ -5,4 +5,5 @@
     <string name="error_message">Ошибка загрузки</string>
     <string name="login_button_text">Войти через ВКонтакте</string>
     <string name="login_app_description">Приложение для удобного просмотра ленты ВКонтакте</string>
+    <string name="item_logout">Выйти из аккаунта</string>
 </resources>

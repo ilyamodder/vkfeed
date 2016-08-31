@@ -181,4 +181,9 @@ public class MainPresenter {
     private void saveNextOffset() {
         RepositoryProvider.getLocalRepository().setNextOffset(mNextOffset);
     }
+
+    public void logout() {
+        VKSdk.logout();
+        mView.showLoginActivity();
+    }
 }
